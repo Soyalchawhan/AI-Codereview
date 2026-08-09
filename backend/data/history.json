@@ -1,0 +1,110 @@
+[
+  {
+    "id": "e823d5e8-c3d1-427e-8f49-15420fbd8dd8",
+    "filename": "App.jsx",
+    "language": "javascript",
+    "createdAt": "2026-08-06T16:41:38.570Z",
+    "code": "import React from 'react'\nimport Navbar from './components/Navbar.jsx'\nimport Hero from './components/Hero.jsx'\nimport Skills from './components/Skills.jsx'\nimport Projects from './components/Projects.jsx'\nimport About from './components/About.jsx'\nimport Contact from './components/Contact.jsx'\nimport Footer from './components/Footer.jsx'\n\nexport default function App() {\n  return (\n    <div className=\"app\">\n      <Navbar />\n      <main>\n        <Hero />\n        <Skills />\n        <Projects />\n        <About />\n        <Contact />\n      </main>\n      <Footer />\n    </div>\n  )\n}\n",
+    "static": {
+      "language": "javascript",
+      "totalLines": 25,
+      "issues": [
+        {
+          "line": 11,
+          "severity": "low",
+          "category": "Formatting",
+          "message": "Statement may be missing a semicolon.",
+          "suggestion": "Add a trailing semicolon for consistency."
+        }
+      ],
+      "summary": {
+        "high": 0,
+        "medium": 0,
+        "low": 1
+      }
+    },
+    "ai": {
+      "explanation": "This code defines a React application component, rendering various sub-components such as a navbar, hero section, skills, projects, about, contact, and footer.",
+      "complexity": "The code is relatively simple and easy to read.",
+      "bugs": [],
+      "codeSmells": [],
+      "namingSuggestions": [],
+      "performanceSuggestions": [],
+      "refactoringSuggestions": [],
+      "documentation": "/** \n * App component: The main component of the React application. \n * @returns {JSX.Element} The JSX element representing the application. \n */"
+    }
+  },
+  {
+    "id": "65d2ef66-34cd-4bfb-9b1d-1540c7f7ad99",
+    "filename": "pasted-snippet",
+    "language": "python",
+    "createdAt": "2026-08-06T16:39:21.763Z",
+    "code": "def process_items(items=[]):\n    total = 0\n    for i in items:\n        total = total + i.price\n    print(total)\n    try:\n        return total / len(items)\n    except:\n        return 0",
+    "static": {
+      "language": "python",
+      "totalLines": 9,
+      "issues": [
+        {
+          "line": 1,
+          "severity": "medium",
+          "category": "Possible Bug",
+          "message": "Mutable default argument (list/dict).",
+          "suggestion": "Use `None` as the default and create the list/dict inside the function."
+        },
+        {
+          "line": 5,
+          "severity": "low",
+          "category": "Code Quality",
+          "message": "Debug `print()` left in code.",
+          "suggestion": "Remove debug prints or use the `logging` module."
+        },
+        {
+          "line": 8,
+          "severity": "medium",
+          "category": "Best Practice",
+          "message": "Bare `except:` clause.",
+          "suggestion": "Catch specific exceptions instead of every possible error."
+        }
+      ],
+      "summary": {
+        "high": 0,
+        "medium": 2,
+        "low": 1
+      }
+    },
+    "ai": {
+      "explanation": "This code calculates the average price of a list of items and prints the total price, with error handling for potential division by zero errors.",
+      "complexity": "The code has a low to moderate complexity level with a simple loop and basic exception handling, but the mutable default argument and bare except clause can make it harder to understand and maintain.",
+      "bugs": [
+        {
+          "line": 1,
+          "issue": "The function uses a mutable default argument for the 'items' parameter, which can lead to unexpected behavior if the function is called multiple times.",
+          "suggestion": "Replace the mutable default argument with None and initialize the list inside the function."
+        }
+      ],
+      "codeSmells": [
+        {
+          "line": 8,
+          "issue": "The bare except clause can catch and hide unexpected exceptions, making it harder to debug the code.",
+          "suggestion": "Replace the bare except clause with a specific exception type, such as ZeroDivisionError or ValueError, to handle expected errors."
+        }
+      ],
+      "namingSuggestions": [
+        {
+          "line": null,
+          "issue": "Variable names such as 'i' and 'total' are not very descriptive.",
+          "suggestion": "Consider using more descriptive variable names, such as 'item' and 'total_price'."
+        }
+      ],
+      "performanceSuggestions": [],
+      "refactoringSuggestions": [
+        {
+          "line": 5,
+          "issue": "The debug print statement is left in the code.",
+          "suggestion": "Remove or replace the debug print statement with a logging statement to improve code quality and maintainability."
+        }
+      ],
+      "documentation": "def process_items(items: list) -> float: Calculate the average price of a list of items and print the total price."
+    }
+  }
+]

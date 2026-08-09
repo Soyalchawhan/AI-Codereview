@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marginalia — AI Code Review Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <!-- ===== Header ===== -->
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">§</span>
+        <div class="brand__text">
+          <h1 class="brand__name">Marginalia</h1>
+          <p class="brand__tagline">An AI code reviewer that writes in the margins.</p>
+        </div>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <button class="site-nav__link is-active" data-view="review" type="button">Review</button>
+        <button class="site-nav__link" data-view="history" type="button">History</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- ===== Review view ===== -->
+      <section id="view-review" class="view">
+        <section class="intake" aria-labelledby="intake-heading">
+          <h2 id="intake-heading" class="section-title">Bring your code</h2>
+          <p class="section-lede">
+            Paste a snippet or drop in a file. Every submission runs through a static pass first,
+            then a full AI review — bugs, style, naming, performance, and a plain-language explanation.
+          </p>
+
+          <div class="intake__grid">
+            <div class="intake__panel">
+              <label class="field-label" for="code-input">Paste code</label>
+              <textarea
+                id="code-input"
+                class="code-input"
+                spellcheck="false"
+                placeholder="function add(a, b) {&#10;  return a + b&#10;}"
+              ></textarea>
+              <div class="field-hint" id="filename-hint">Language is detected automatically.</div>
+            </div>
+
+            <div class="intake__divider" aria-hidden="true">
+              <span>or</span>
+            </div>
+
+            <div class="intake__panel">
+              <label class="field-label" for="file-input">Upload a file</label>
+              <div class="dropzone" id="dropzone">
+                <input type="file" id="file-input" class="dropzone__input" accept=".js,.jsx,.ts,.tsx,.py,.java,.txt" />
+                <div class="dropzone__body">
+                  <span class="dropzone__icon" aria-hidden="true">⌘</span>
+                  <p class="dropzone__title">Drag a file here, or click to browse</p>
+                  <p class="dropzone__hint">.js · .jsx · .ts · .py · .java · .txt — up to 1MB</p>
+                </div>
+                <p class="dropzone__filename" id="dropzone-filename" hidden></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="intake__actions">
+            <button id="submit-review" class="btn btn--primary" type="button">
+              Review my code
+            </button>
+            <button id="clear-review" class="btn btn--ghost" type="button">Clear</button>
+            <span id="intake-error" class="intake__error" role="alert" hidden></span>
+          </div>
+        </section>
+
+        <!-- ===== Loading state ===== -->
+        <section id="loading-state" class="loading-state" hidden aria-live="polite">
+          <div class="loading-state__spinner" aria-hidden="true"></div>
+          <p><span id="loading-label">Reading your code</span>&hellip;</p>
+        </section>
+
+        <!-- ===== Results ===== -->
+        <section id="results" class="results" hidden aria-labelledby="results-heading">
+          <div class="results__meta">
+            <h2 id="results-heading" class="section-title">Review notes</h2>
+            <div class="results__badges">
+              <span class="badge" id="result-filename">—</span>
+              <span class="badge badge--muted" id="result-language">—</span>
+            </div>
+          </div>
+
+          <div class="results__grid">
+            <!-- Static analysis -->
+            <div class="panel">
+              <div class="panel__header">
+                <h3 class="panel__title">Stage 1 — Static analysis</h3>
+                <div class="severity-summary" id="severity-summary"></div>
+              </div>
+              <ol class="note-list" id="static-issues"></ol>
+              <p class="empty-note" id="static-empty" hidden>No static issues found. Clean pass.</p>
+            </div>
+
+            <!-- AI review -->
+            <div class="panel">
+              <div class="panel__header">
+                <h3 class="panel__title">Stage 2 — AI review</h3>
+              </div>
+
+              <div id="ai-unavailable" class="ai-unavailable" hidden></div>
+
+              <div id="ai-content">
+                <div class="ai-block">
+                  <h4 class="ai-block__title">What this code does</h4>
+                  <p id="ai-explanation" class="ai-block__text">—</p>
+                </div>
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Complexity</h4>
+                  <p id="ai-complexity" class="ai-block__text">—</p>
+                </div>
+
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Bugs</h4>
+                  <ol class="note-list" id="ai-bugs"></ol>
+                </div>
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Code smells</h4>
+                  <ol class="note-list" id="ai-smells"></ol>
+                </div>
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Naming</h4>
+                  <ol class="note-list" id="ai-naming"></ol>
+                </div>
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Performance</h4>
+                  <ol class="note-list" id="ai-performance"></ol>
+                </div>
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Refactoring</h4>
+                  <ol class="note-list" id="ai-refactoring"></ol>
+                </div>
+
+                <div class="ai-block">
+                  <h4 class="ai-block__title">Auto-generated documentation</h4>
+                  <pre class="doc-block" id="ai-documentation">—</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ===== History view ===== -->
+      <section id="view-history" class="view" hidden>
+        <h2 class="section-title">Past reviews</h2>
+        <p class="section-lede">Every submission is kept here for reference.</p>
+        <ul class="history-list" id="history-list"></ul>
+        <p class="empty-note" id="history-empty" hidden>No reviews yet — submit one from the Review tab.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Marginalia · AI Code Review Assistant · internship project</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
