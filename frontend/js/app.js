@@ -1,7 +1,7 @@
 
 const API_BASE = window.location.hostname === "localhost"
   ? "http://localhost:4000"
-  : "https://your-backend.onrender.com";
+  : "https://ai-codereview-4ote.onrender.com";
 
 const els = {
   navLinks: document.querySelectorAll(".site-nav__link"),
